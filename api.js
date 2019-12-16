@@ -23,9 +23,11 @@ let _getValueFromCookie = function(key){
 
 
 function getAccessToken(member_id, password, get_userdata){
-    var formData = new FormData();
-    formData.append("username",_getValueFromCookie("id"))
-    formData.append("password",_getValueFromCookie("password"))
+    let formData = new FormData();
+    let var_member_id = !member_id ? _getValueFromCookie("id") : member_id
+    let var_password = !password ? _getValueFromCookie("password") : password
+    formData.append("username",var_member_id)
+    formData.append("password",var_password)
     formData.append("scope","game")
     formData.append("grant_type","password")
     formData.append("client_secret","game")
@@ -114,6 +116,18 @@ function getRanking(game_id, room, limit, offset){
             ranking = res.ranking
             console.log("以下のデータを取得しました")
             console.log(ranking)
+            let table = $('#ranking_table')
+            let html = '<tr><th>順位</th><th>名前</th><th>スコア</th></tr>'
+            ranking.forEach(function(r){
+                html += '\
+                <tr>\
+                    <td>'+r.rank+'</td>\
+                    <td><img src="'+r.icon_url+'" width="25" height="25">　<a href="https://app.4353p-club.com/profile/friendProfile/'+r.member_id+'">'+r.name+'<small>さん</small></a></td>\
+                    <td>'+r.point+'</td>\
+                </tr>\
+                '
+            })
+            table.html(html)
             return ranking
         }else{
             console.log(res)
